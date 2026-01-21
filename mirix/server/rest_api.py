@@ -2707,12 +2707,15 @@ async def search_memory(
     embedded_text, embedded_text_padded = _precompute_embedding_for_search(
         search_method, query, agent_state
     )
+    if embedded_text is not None:
+        logger.info(f"✅ OPTIMIZATION 1: Pre-computed embedding ONCE for query '{query[:50]}...' (will be reused by all {5 if memory_type == 'all' else 1} memory manager(s))")
 
     # Collect results from requested memory types
     all_results = []
 
     # If searching all memory types, run searches concurrently for better performance
     if memory_type == "all":
+        logger.info("✅ OPTIMIZATION 2: Running memory manager searches in PARALLEL using asyncio.gather()")
         import asyncio
         
         # Define async wrappers for each manager call
@@ -3174,12 +3177,15 @@ async def search_memory_all_users(
     embedded_text, embedded_text_padded = _precompute_embedding_for_search(
         search_method, query, agent_state
     )
+    if embedded_text is not None:
+        logger.info(f"✅ OPTIMIZATION 1: Pre-computed embedding ONCE for query '{query[:50]}...' (will be reused by all {5 if memory_type == 'all' else 1} memory manager(s))")
 
     # Collect results using organization_id filter
     all_results = []
 
     # If searching all memory types, run searches concurrently for better performance
     if memory_type == "all":
+        logger.info("✅ OPTIMIZATION 2: Running memory manager searches in PARALLEL using asyncio.gather()")
         import asyncio
         
         # Define async wrappers for each manager call
